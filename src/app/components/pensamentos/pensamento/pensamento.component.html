@@ -8,6 +8,12 @@
     <b>{{ pensamento.autoria }}</b>
   </p>
   <div class="acoes">
+    <button class="botao-favorito" (click)="atualizarFavoritos()">
+      <img
+        src="/assets/images/icone-favorito-{{ mudarIconeFavorito() }}.png"
+        alt="Icone favorito {{ mudarIconeFavorito() }}"
+      />
+    </button>
     <button
       class="botao-editar"
       routerLink="/pensamentos/editar/{{ pensamento.id }}"

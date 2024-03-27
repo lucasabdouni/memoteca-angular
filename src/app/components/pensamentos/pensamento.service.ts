@@ -1,7 +1,7 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { PensamentoProps } from 'models/interface/pensamento';
 import { Observable } from 'rxjs';
+import { PensamentoProps } from 'src/app/models/interface/pensamento';
 
 @Injectable({
   providedIn: 'root',
@@ -11,8 +11,32 @@ export class PensamentoService {
 
   constructor(private http: HttpClient) {}
 
-  listar(): Observable<PensamentoProps[]> {
-    return this.http.get<PensamentoProps[]>(this.API);
+  listar(
+    pagina: number,
+    filtro?: string,
+    favoritos?: boolean
+  ): Observable<PensamentoProps[]> {
+    const itensPorPagina = 6;
+
+    let params = new HttpParams()
+      .set('_page', pagina)
+      .set('_limit', itensPorPagina);
+
+    // return this.http.get<PensamentoProps[]>(
+    //   `${this.API}?_page=${pagina}&_limit=${itensPorPagina}`
+    // );
+
+    if (filtro && filtro.trim().length > 2) {
+      params = params.set('q', filtro);
+    }
+
+    if (favoritos && favoritos === true) {
+      params = params.set('favorito', true);
+    }
+
+    return this.http.get<PensamentoProps[]>(this.API, {
+      params,
+    });
   }
 
   criar(pensamento: PensamentoProps): Observable<PensamentoProps> {
@@ -22,6 +46,12 @@ export class PensamentoService {
   editar(pensamento: PensamentoProps): Observable<PensamentoProps> {
     const url = `${this.API}/${pensamento.id}`;
     return this.http.put<PensamentoProps>(url, pensamento);
+  }
+
+  mudarFavorito(pensamento: PensamentoProps): Observable<PensamentoProps> {
+    pensamento.favorito = !pensamento.favorito;
+
+    return this.editar(pensamento);
   }
 
   excluir(id: string): Observable<PensamentoProps> {

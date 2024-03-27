@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { PensamentoProps } from 'models/interface/pensamento';
+import { PensamentoProps } from 'src/app/models/interface/pensamento';
 import { PensamentoService } from '../pensamento.service';
 
 @Component({
@@ -25,28 +25,21 @@ export class EditarPensamentoComponent implements OnInit {
     this.service.buscarPorId(id!).subscribe((pensamento) => {
       this.pensamento = pensamento;
 
-      if (this.pensamento) {
-        this.formulario.patchValue({
-          conteudo: this.pensamento.conteudo,
-          autoria: this.pensamento.autoria,
-          modelo: this.pensamento.modelo,
-        });
-      }
-    });
-
-    this.formulario = this.formBuider.group({
-      conteudo: [
-        '',
-        Validators.compose([
-          Validators.required,
-          Validators.pattern(/(.|\s)*\S(.|\s)*/),
-        ]),
-      ],
-      autoria: [
-        '',
-        Validators.compose([Validators.required, Validators.minLength(3)]),
-      ],
-      modelo: ['', [Validators.required]],
+      this.formulario = this.formBuider.group({
+        conteudo: [
+          pensamento.conteudo,
+          Validators.compose([
+            Validators.required,
+            Validators.pattern(/(.|\s)*\S(.|\s)*/),
+          ]),
+        ],
+        autoria: [
+          pensamento.autoria,
+          Validators.compose([Validators.required, Validators.minLength(3)]),
+        ],
+        modelo: [pensamento.modelo],
+        favorito: [this.pensamento.favorito],
+      });
     });
   }
 

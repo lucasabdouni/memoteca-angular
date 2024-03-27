@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { PensamentoProps } from 'models/interface/pensamento';
+import { PensamentoProps } from 'src/app/models/interface/pensamento';
 import { PensamentoService } from '../pensamento.service';
 
 @Component({

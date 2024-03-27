@@ -3,4 +3,5 @@ export interface PensamentoProps {
   conteudo: string;
   autoria: string;
   modelo: string;
+  favorito: boolean;
 }
