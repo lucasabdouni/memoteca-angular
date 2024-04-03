@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { PensamentoProps } from 'src/app/models/interface/pensamento';
 import { PensamentoService } from '../pensamento.service';
 
@@ -13,18 +14,22 @@ export class ListarPensamentoComponent implements OnInit {
   haMaisPensamentos: boolean = true;
   filtro!: string;
   favoritos: boolean = false;
+  listaFavoritos: PensamentoProps[] = [];
+  titulo: string = 'Meu Mural';
 
-  constructor(private service: PensamentoService) {}
+  constructor(private service: PensamentoService, private router: Router) {}
 
   ngOnInit(): void {
-    this.service.listar(this.paginaAtual).subscribe((listaPensamentos) => {
-      this.listaPensamentos = listaPensamentos;
-    });
+    this.service
+      .listar(this.paginaAtual, this.filtro, this.favoritos)
+      .subscribe((listaPensamentos) => {
+        this.listaPensamentos = listaPensamentos;
+      });
   }
 
   carregarMaisPensamentos() {
     this.service
-      .listar(++this.paginaAtual, undefined, this.favoritos)
+      .listar(++this.paginaAtual, this.filtro, this.favoritos)
       .subscribe((response) => {
         this.listaPensamentos.push(...response);
         if (!response.length) {
@@ -38,13 +43,23 @@ export class ListarPensamentoComponent implements OnInit {
     this.paginaAtual = 1;
 
     this.service
-      .listar(this.paginaAtual, this.filtro)
+      .listar(this.paginaAtual, this.filtro, this.favoritos)
       .subscribe((listaPensamentos) => {
         this.listaPensamentos = listaPensamentos;
       });
   }
 
+  recarregarComponente() {
+    this.favoritos = false;
+    this.paginaAtual = 1;
+
+    this.router.routeReuseStrategy.shouldReuseRoute = () => false;
+    this.router.onSameUrlNavigation = 'reload';
+    this.router.navigate([this.router.url]);
+  }
+
   listarFavorito() {
+    this.titulo = 'Meus Favoritos';
     this.favoritos = true;
     this.haMaisPensamentos = true;
     this.paginaAtual = 1;
@@ -52,6 +67,7 @@ export class ListarPensamentoComponent implements OnInit {
       .listar(this.paginaAtual, this.filtro, this.favoritos)
       .subscribe((listaPensamentosFavoritos) => {
         this.listaPensamentos = listaPensamentosFavoritos;
+        this.listaFavoritos = listaPensamentosFavoritos;
       });
   }
 }

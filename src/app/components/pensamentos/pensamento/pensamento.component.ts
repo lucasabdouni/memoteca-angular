@@ -9,6 +9,7 @@ import { PensamentoService } from '../pensamento.service';
 })
 export class PensamentoComponent implements OnInit {
   @Input() pensamento!: PensamentoProps;
+  @Input() listaFavoritos: PensamentoProps[] = [];
 
   constructor(private service: PensamentoService) {}
 
@@ -30,6 +31,11 @@ export class PensamentoComponent implements OnInit {
   }
 
   atualizarFavoritos() {
-    this.service.mudarFavorito(this.pensamento).subscribe();
+    this.service.mudarFavorito(this.pensamento).subscribe(() => {
+      this.listaFavoritos.splice(
+        this.listaFavoritos.indexOf(this.pensamento),
+        1
+      );
+    });
   }
 }

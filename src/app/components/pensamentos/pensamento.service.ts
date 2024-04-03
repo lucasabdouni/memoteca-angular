@@ -13,8 +13,8 @@ export class PensamentoService {
 
   listar(
     pagina: number,
-    filtro?: string,
-    favoritos?: boolean
+    filtro: string,
+    favoritos: boolean
   ): Observable<PensamentoProps[]> {
     const itensPorPagina = 6;
 
